@@ -28,7 +28,7 @@ exports.createDiscount = async (req, res) => {
         // Save the discount to the database
         await newDiscount.save();
 
-        res.status(201).json({ message: 'Discount created successfully', discount: newDiscount });
+        res.status(201).json({ discount: newDiscount });
     } catch (error) {
         console.error('Error creating discount:', error);
         res.status(500).json({ message: 'Internal server error' });
