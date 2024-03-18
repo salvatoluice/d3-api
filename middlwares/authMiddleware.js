@@ -2,7 +2,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-const authMiddleware = (requiredRole) => async (req, res, next) => {
+const authMiddleware = (requiredRoles) => async (req, res, next) => {
     try {
         // Get the JWT token from the request headers
         const token = req.headers.authorization?.split(' ')[1];
@@ -20,14 +20,14 @@ const authMiddleware = (requiredRole) => async (req, res, next) => {
             return res.status(401).json({ message: 'Invalid token' });
         }
 
-        // Check if the user has the required role
-        if (user.role !== requiredRole) {
+        // Check if the user has one of the required roles
+        if (!requiredRoles.includes(user.role)) {
             return res.status(403).json({ message: 'Unauthorized' });
         }
 
         // Attach the user object to the request for further use
         req.user = user;
-        
+
         // If authentication and authorization passed, proceed to the next middleware or route handler
         next();
     } catch (error) {

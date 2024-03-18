@@ -3,12 +3,13 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const uploadToS3 = require('../utils/s3Upload');
+const apiKeyMiddleware = require('../middlewares/apiKeyMiddleware');
 
 // Configure multer for file uploads
 const upload = multer({ dest: 'uploads/' });
 
-// Upload image to S3
-router.post('/upload', upload.single('image'), async (req, res) => {
+// Upload image to S3 (protected by API key)
+router.post('/upload', apiKeyMiddleware, upload.single('image'), async (req, res) => {
     try {
         const imageUrl = await uploadToS3(req.file);
         res.status(200).json({ imageUrl });
