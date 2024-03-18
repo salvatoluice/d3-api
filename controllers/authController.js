@@ -34,11 +34,17 @@ exports.register = async (req, res) => {
         // Generate JWT token
         const token = jwt.sign({ userId: newUser._id }, jwtSecret, { expiresIn: '1h' });
 
-        // Return the newly registered user along with the token
-        res.status(201).json({ message: 'User registered successfully', user: newUser, token });
+        res.status(201).json({
+            first_name: newUser.first_name,
+            last_name: newUser.last_name,
+            email: newUser.email,
+            phone: newUser.phone,
+            role: newUser.role,
+            token
+        });
     } catch (error) {
         console.error('Error registering user:', error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -46,13 +52,11 @@ exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // Check if the user exists
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
-        // Compare passwords
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch) {
             return res.status(401).json({ message: 'Invalid email or password' });
@@ -61,12 +65,14 @@ exports.login = async (req, res) => {
         // Generate JWT token
         const token = jwt.sign({ userId: user._id }, jwtSecret, { expiresIn: '1h' });
 
-        res.status(200).json({ token });
+        // Return user info along with the token
+        res.status(200).json({ email: user.email, firstName: user.first_name, lastName: user.last_name, phone: user.phone, role: user.role, token });
     } catch (error) {
         console.error('Error logging in user:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
 
 // Logout user
 exports.logout = async (req, res) => {
