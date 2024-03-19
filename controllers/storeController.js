@@ -5,16 +5,13 @@ exports.createStore = async (req, res) => {
     try {
         const { name, storeType, location } = req.body;
 
-        // Create the store
         const newStore = new Store({
             name,
             storeType,
             location,
-            owner: req.user._id, // Set the owner to the ID of the authenticated user
-            imageUrl: req.body.imageUrl // Adding imageUrl field from the request body
+            owner: req.user._id, 
+            imageUrl: req.body.imageUrl 
         });
-
-        // Save the store to the database
         await newStore.save();
 
         res.status(201).json({ message: 'Store created successfully', store: newStore });
@@ -62,6 +59,17 @@ exports.updateStore = async (req, res) => {
         res.status(200).json({ message: 'Store updated successfully', store: updatedStore });
     } catch (error) {
         console.error('Error updating store:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+// Get all stores belonging to the currently logged-in user
+exports.getUserStores = async (req, res) => {
+    try {
+        const stores = await Store.find({ owner: req.user._id });
+        res.status(200).json({ stores });
+    } catch (error) {
+        console.error('Error retrieving user stores:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };
