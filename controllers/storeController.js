@@ -1,17 +1,17 @@
-// controllers/storeController.js
 const Store = require('../models/Store');
 
 // Create a new store
 exports.createStore = async (req, res) => {
     try {
-        const { name, type, location } = req.body;
+        const { name, storeType, location } = req.body;
 
         // Create the store
         const newStore = new Store({
             name,
-            type,
+            storeType,
             location,
-            owner: req.user._id // Set the owner to the ID of the authenticated user
+            owner: req.user._id, // Set the owner to the ID of the authenticated user
+            imageUrl: req.body.imageUrl // Adding imageUrl field from the request body
         });
 
         // Save the store to the database
@@ -53,9 +53,9 @@ exports.getStoreById = async (req, res) => {
 exports.updateStore = async (req, res) => {
     try {
         const { storeId } = req.params;
-        const { name, type, location } = req.body;
+        const { name, storeType, location, imageUrl } = req.body;
 
-        const updatedStore = await Store.findByIdAndUpdate(storeId, { name, type, location }, { new: true });
+        const updatedStore = await Store.findByIdAndUpdate(storeId, { name, storeType, location, imageUrl }, { new: true });
         if (!updatedStore) {
             return res.status(404).json({ message: 'Store not found' });
         }
