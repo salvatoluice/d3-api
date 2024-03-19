@@ -9,7 +9,7 @@ const storeController = require('../controllers/storeController');
 router.post('/stores', authMiddleware('seller'), storeController.createStore);
 
 // Get all stores (protected by API key)
-router.get('/stores', apiKeyMiddleware, storeController.getAllStores);
+router.get('/stores', storeController.getAllStores);
 
 // Get a single store by ID (protected by API key)
 router.get('/stores/:storeId', apiKeyMiddleware, storeController.getStoreById);

@@ -73,10 +73,7 @@ exports.login = async (req, res) => {
     }
 };
 
-
 // Logout user
 exports.logout = async (req, res) => {
-    // You can implement logout logic here (e.g., clearing session data, invalidating token)
-    // For stateless JWT tokens, there is no need for explicit logout
     res.status(200).json({ message: 'Logout successful' });
 };

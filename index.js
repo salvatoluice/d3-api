@@ -22,7 +22,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-mongoose.connect('mongodb+srv://salvatoluice5:YzH1NPeIklnrkQFY@cluster0.x5zzasy.mongodb.net/', {
+mongoose.connect('mongodb+srv://salvatoluice5:pa9o2XYROyhlT1fc@cluster0.decb1ui.mongodb.net/', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
