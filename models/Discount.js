@@ -10,7 +10,9 @@ const discountSchema = new mongoose.Schema({
     expiryDate: { type: Date, required: true },
     category: { type: String },
     store: { type: mongoose.Schema.Types.ObjectId, ref: 'Store', required: true },
-    serviceTime: { type: String }
+    serviceTime: { type: String },
+    description: { type: String },
+    imageUrl: { type: String }
 });
 
 const Discount = mongoose.model('Discount', discountSchema);

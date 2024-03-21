@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const uploadRoutes = require('./routes/uploadRoutes');
 const authRoutes = require('./routes/authRoutes');
 const storeRoutes = require('./routes/storeRoutes');
+const discountRoutes = require('./routes/discountRoutes');
 
 const app = express();
 
@@ -33,6 +34,7 @@ mongoose.connect('mongodb+srv://salvatoluice5:pa9o2XYROyhlT1fc@cluster0.decb1ui.
 app.use('/api/v1/users', authRoutes);
 app.use('/api/v1/cloudinary', uploadRoutes);
 app.use('/api/v1/stores', storeRoutes);
+app.use('/api/v1/discounts', discountRoutes);
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
