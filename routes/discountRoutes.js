@@ -5,6 +5,7 @@ const discountController = require('../controllers/discountController');
 
 router.post('/', authMiddleware(['seller', 'admin']), discountController.createDiscount);
 router.get('/', discountController.getAllDiscounts);
+router.get('/shop/:shopId', discountController.getDiscountsByShop);
 router.get('/:discountId', discountController.getDiscountById);
 router.put('/:discountId', authMiddleware(['seller', 'admin']), discountController.updateDiscount);
 router.delete('/:discountId', authMiddleware(['admin']), discountController.deleteDiscount);

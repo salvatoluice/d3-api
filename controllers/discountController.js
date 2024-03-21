@@ -1,4 +1,5 @@
 const Discount = require('../models/Discount');
+const Store = require('../models/Store'); 
 
 exports.createDiscount = async (req, res) => {
     try {
@@ -38,6 +39,22 @@ exports.getAllDiscounts = async (req, res) => {
         res.status(200).json({ discounts });
     } catch (error) {
         console.error('Error retrieving discounts:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+exports.getDiscountsByShop = async (req, res) => {
+    try {
+        // Extract shop ID from request parameters
+        const { shopId } = req.params;
+
+        // Retrieve discounts belonging to the specified shop from the database
+        const discounts = await Discount.find({ store: shopId }).populate('store', 'name owner');
+
+        // Respond with the discounts belonging to the specified shop
+        res.status(200).json({ discounts });
+    } catch (error) {
+        console.error('Error retrieving discounts by shop:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };
