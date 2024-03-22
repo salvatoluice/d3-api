@@ -1,14 +1,8 @@
 const Discount = require('../models/Discount');
 const moment = require('moment');
+const BookingSlot = require('../models/BookingSlot');
 
-const generateBookingSlots = (
-    discountId,
-    startDate,
-    expiryDate,
-    serviceTime,
-    startTime,
-    endTime
-) => {
+const generateBookingSlots = async (discountId, startDate, expiryDate, serviceTime, startTime, endTime) => {
     const bookingSlots = [];
     let currentDate = moment(startDate);
     const endDate = moment(expiryDate);
@@ -23,13 +17,16 @@ const generateBookingSlots = (
 
         while (startTimeMoment.add(hours, 'hours').isBefore(endTimeMoment)) {
             const slotEndTime = startTimeMoment.format('HH:mm');
-            bookingSlots.push({
-                discountId: discountId,
+            // Create and save the booking slot
+            const newSlot = new BookingSlot({
+                discountId,
                 date: currentDate.toDate(),
                 startTime: slotStartTime,
                 endTime: slotEndTime,
                 booked: false
             });
+            await newSlot.save();
+            bookingSlots.push(newSlot); // Push the created slot to the array
             slotStartTime = slotEndTime;
             startTimeMoment.add(minutes, 'minutes');
         }
@@ -44,14 +41,7 @@ exports.generateBookingSlots = async (req, res) => {
     try {
         const { discountId, startDate, expiryDate, serviceTime, startTime, endTime } = req.body;
 
-        const bookingSlots = generateBookingSlots(
-            discountId,
-            startDate,
-            expiryDate,
-            serviceTime,
-            startTime,
-            endTime
-        );
+        const bookingSlots = await generateBookingSlots(discountId, startDate, expiryDate, serviceTime, startTime, endTime);
 
         res.status(200).json({ bookingSlots });
     } catch (error) {
@@ -60,7 +50,18 @@ exports.generateBookingSlots = async (req, res) => {
     }
 };
 
+exports.getBookingSlotsByDiscountId = async (req, res) => {
+    try {
+        const { discountId } = req.params;
 
+        const bookingSlots = await BookingSlot.find({ discountId });
+
+        res.status(200).json({ bookingSlots });
+    } catch (error) {
+        console.error('Error retrieving booking slots for discount:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
 
 exports.createDiscount = async (req, res) => {
     try {
@@ -124,6 +125,24 @@ exports.getDiscountById = async (req, res) => {
         res.status(200).json({ discount });
     } catch (error) {
         console.error('Error retrieving discount:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+exports.getBookingSlotsByDiscountId = async (req, res) => {
+    try {
+        const { discountId } = req.params;
+
+        // Fetch the booking slots by discount ID
+        const bookingSlots = await BookingSlot.find({ discountId });
+
+        if (!bookingSlots) {
+            return res.status(404).json({ message: 'Booking slots not found for this discount' });
+        }
+
+        res.status(200).json({ bookingSlots });
+    } catch (error) {
+        console.error('Error retrieving booking slots for discount:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };

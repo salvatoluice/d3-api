@@ -8,6 +8,7 @@ router.post('/generate-booking-slots', discountController.generateBookingSlots);
 router.get('/', discountController.getAllDiscounts);
 router.get('/shop/:shopId', discountController.getDiscountsByShop);
 router.get('/:discountId', discountController.getDiscountById);
+router.get('/:discountId/booking-slots', discountController.getBookingSlotsByDiscountId);
 router.put('/:discountId', authMiddleware(['seller', 'admin']), discountController.updateDiscount);
 router.delete('/:discountId', authMiddleware(['admin']), discountController.deleteDiscount);
 
