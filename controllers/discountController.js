@@ -132,8 +132,6 @@ exports.getDiscountById = async (req, res) => {
 exports.getBookingSlotsByDiscountId = async (req, res) => {
     try {
         const { discountId } = req.params;
-
-        // Fetch the booking slots by discount ID
         const bookingSlots = await BookingSlot.find({ discountId });
 
         if (!bookingSlots) {

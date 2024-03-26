@@ -1,6 +1,6 @@
 const Store = require('../models/Store');
+const Follower = require('../models/Follower');
 
-// Create a new store
 exports.createStore = async (req, res) => {
     try {
         const { name, storeType, location } = req.body;
@@ -21,24 +21,19 @@ exports.createStore = async (req, res) => {
     }
 };
 
-// Get all stores
-exports.getAllStores = async (req, res) => {
-    try {
-        const stores = await Store.find();
-        res.status(200).json({ stores });
-    } catch (error) {
-        console.error('Error retrieving stores:', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-};
-
-// Get a single store by ID
 exports.getStoreById = async (req, res) => {
     try {
-        const store = await Store.findById(req.params.storeId);
+        const storeId = req.params.storeId;
+
+        const store = await Store.findById(storeId).populate('owner', 'first_name last_name email phone');
+
         if (!store) {
             return res.status(404).json({ message: 'Store not found' });
         }
+
+        const followersCount = await Follower.countDocuments({ store: storeId });
+        store.followers = followersCount;
+
         res.status(200).json({ store });
     } catch (error) {
         console.error('Error retrieving store:', error);
@@ -46,7 +41,27 @@ exports.getStoreById = async (req, res) => {
     }
 };
 
-// Update a store by ID
+exports.getAllStores = async (req, res) => {
+    try {
+        const stores = await Store.find().populate('owner', 'first_name last_name email phone');
+
+        if (!stores) {
+            return res.status(404).json({ message: 'Stores not found' });
+        }
+
+        // Add followers count to each store
+        for (let store of stores) {
+            const followersCount = await Follower.countDocuments({ store: store._id });
+            store.followers = followersCount;
+        }
+
+        res.status(200).json({ stores });
+    } catch (error) {
+        console.error('Error retrieving stores:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
 exports.updateStore = async (req, res) => {
     try {
         const { storeId } = req.params;
@@ -63,7 +78,6 @@ exports.updateStore = async (req, res) => {
     }
 };
 
-// Get all stores belonging to the currently logged-in user
 exports.getUserStores = async (req, res) => {
     try {
         const stores = await Store.find({ owner: req.user._id });
@@ -74,7 +88,6 @@ exports.getUserStores = async (req, res) => {
     }
 };
 
-// Delete a store by ID
 exports.deleteStore = async (req, res) => {
     try {
         const { storeId } = req.params;

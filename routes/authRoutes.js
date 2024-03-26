@@ -1,19 +1,12 @@
 // routes/authRoutes.js
 const express = require('express');
 const router = express.Router();
-const apiKeyMiddleware = require('../middlewares/apiKeyMiddleware');
 const authController = require('../controllers/authController');
+const authMiddleware = require('../middlewares/authMiddleware');
 
-// Apply API key middleware
-// router.use(apiKeyMiddleware);
-
-// Register a new user
 router.post('/register', authController.register);
-
-// Login user
 router.post('/login', authController.login);
-
-// Logout user
 router.get('/logout', authController.logout);
+router.get('/current-user', authMiddleware(['user', 'seller', 'admin']), authController.getCurrentUser);
 
 module.exports = router;

@@ -9,16 +9,13 @@ exports.register = async (req, res) => {
     try {
         const { first_name, last_name, email, phone, password, role } = req.body;
 
-        // Check if the user already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: 'User already exists' });
         }
 
-        // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create a new user
         const newUser = new User({
             first_name,
             last_name,
@@ -28,11 +25,9 @@ exports.register = async (req, res) => {
             role
         });
 
-        // Save the user to the database
         await newUser.save();
 
-        // Generate JWT token
-        const token = jwt.sign({ userId: newUser._id }, jwtSecret, { expiresIn: '1h' });
+        const token = jwt.sign({ userId: newUser._id }, jwtSecret, { expiresIn: '30d' });
 
         res.status(201).json({
             first_name: newUser.first_name,
@@ -62,10 +57,8 @@ exports.login = async (req, res) => {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
-        // Generate JWT token
-        const token = jwt.sign({ userId: user._id }, jwtSecret, { expiresIn: '1h' });
+        const token = jwt.sign({ userId: user._id }, jwtSecret, { expiresIn: '30d' });
 
-        // Return user info along with the token
         res.status(200).json({ email: user.email, firstName: user.first_name, lastName: user.last_name, phone: user.phone, role: user.role, token });
     } catch (error) {
         console.error('Error logging in user:', error);
@@ -73,7 +66,29 @@ exports.login = async (req, res) => {
     }
 };
 
-// Logout user
+exports.getCurrentUser = async (req, res) => {
+    try {
+        const userId = req.user._id;
+
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({
+            id: user._id,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
+            phone: user.phone,
+            category: user.role,
+        });
+    } catch (error) {
+        console.error('Error fetching current user:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
 exports.logout = async (req, res) => {
     res.status(200).json({ message: 'Logout successful' });
 };

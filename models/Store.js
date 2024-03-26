@@ -5,7 +5,11 @@ const storeSchema = new mongoose.Schema({
     storeType: { type: String, required: true },
     location: { type: String, required: true },
     owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    imageUrl: { type: String }
+    imageUrl: { type: String },
+    followers: {
+        type: Number,
+        default: 0 
+    }
 });
 
 const Store = mongoose.model('Store', storeSchema);
