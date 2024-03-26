@@ -96,7 +96,7 @@ exports.createDiscount = async (req, res) => {
 
 exports.getAllDiscounts = async (req, res) => {
     try {
-        const discounts = await Discount.find();
+        const discounts = await Discount.find().populate('store', 'name owner');
         res.status(200).json({ discounts });
     } catch (error) {
         console.error('Error retrieving discounts:', error);
