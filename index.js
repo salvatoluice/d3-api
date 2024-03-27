@@ -9,6 +9,7 @@ const authRoutes = require('./routes/authRoutes');
 const storeRoutes = require('./routes/storeRoutes');
 const discountRoutes = require('./routes/discountRoutes');
 const followerRoutes = require('./routes/followerRoute');
+const reviewRoutes = require('./routes/reviewRoutes');
 
 const app = express();
 
@@ -37,6 +38,8 @@ app.use('/api/v1/cloudinary', uploadRoutes);
 app.use('/api/v1/stores', storeRoutes);
 app.use('/api/v1/discounts', discountRoutes);
 app.use('/api/v1/followers', followerRoutes);
+app.use('/api/v1/reviews', reviewRoutes);
+
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

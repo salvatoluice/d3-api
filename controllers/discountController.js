@@ -17,7 +17,6 @@ const generateBookingSlots = async (discountId, startDate, expiryDate, serviceTi
 
         while (startTimeMoment.add(hours, 'hours').isBefore(endTimeMoment)) {
             const slotEndTime = startTimeMoment.format('HH:mm');
-            // Create and save the booking slot
             const newSlot = new BookingSlot({
                 discountId,
                 date: currentDate.toDate(),
@@ -26,7 +25,7 @@ const generateBookingSlots = async (discountId, startDate, expiryDate, serviceTi
                 booked: false
             });
             await newSlot.save();
-            bookingSlots.push(newSlot); // Push the created slot to the array
+            bookingSlots.push(newSlot);
             slotStartTime = slotEndTime;
             startTimeMoment.add(minutes, 'minutes');
         }
@@ -96,7 +95,7 @@ exports.createDiscount = async (req, res) => {
 
 exports.getAllDiscounts = async (req, res) => {
     try {
-        const discounts = await Discount.find().populate('store', 'name owner');
+        const discounts = await Discount.find().populate('store', 'name owner imageUrl');
         res.status(200).json({ discounts });
     } catch (error) {
         console.error('Error retrieving discounts:', error);
@@ -108,7 +107,7 @@ exports.getDiscountsByShop = async (req, res) => {
     try {
         const { shopId } = req.params;
 
-        const discounts = await Discount.find({ store: shopId }).populate('store', 'name owner');
+        const discounts = await Discount.find({ store: shopId }).populate('store', 'name owner imageUrl');
         res.status(200).json({ discounts });
     } catch (error) {
         console.error('Error retrieving discounts by shop:', error);
@@ -164,7 +163,6 @@ exports.updateDiscount = async (req, res) => {
             return res.status(404).json({ message: 'Discount not found' });
         }
 
-        // Recalculate price after discount and percentage discount
         updatedDiscount.priceAfterDiscount = updatedDiscount.initialPrice - updatedDiscount.discount;
         updatedDiscount.percentageDiscount = (updatedDiscount.discount / updatedDiscount.initialPrice) * 100;
 
@@ -177,7 +175,6 @@ exports.updateDiscount = async (req, res) => {
     }
 };
 
-// Delete a discount by ID
 exports.deleteDiscount = async (req, res) => {
     try {
         const { discountId } = req.params;

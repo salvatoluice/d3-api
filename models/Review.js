@@ -6,7 +6,7 @@ const reviewSchema = new mongoose.Schema({
     entityId: { type: mongoose.Schema.Types.ObjectId, required: true },
     reviewerName: { type: String, required: true },
     reviewDate: { type: Date, default: Date.now },
-    reviewText: { type: String, required: true }, // Text of the actual review
+    reviewText: { type: String, required: true },
 });
 
 const Review = mongoose.model('Review', reviewSchema);

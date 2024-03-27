@@ -6,7 +6,6 @@ exports.createReview = async (req, res) => {
     try {
         const { entityType, entityId, reviewerName, reviewText } = req.body;
 
-        // Create the review
         const newReview = new Review({
             entityType,
             entityId,
@@ -14,7 +13,6 @@ exports.createReview = async (req, res) => {
             reviewText
         });
 
-        // Save the review to the database
         await newReview.save();
 
         res.status(201).json({ message: 'Review created successfully', review: newReview });
@@ -24,7 +22,6 @@ exports.createReview = async (req, res) => {
     }
 };
 
-// Get all reviews
 exports.getAllReviews = async (req, res) => {
     try {
         const reviews = await Review.find();
@@ -35,7 +32,6 @@ exports.getAllReviews = async (req, res) => {
     }
 };
 
-// Get a single review by ID
 exports.getReviewById = async (req, res) => {
     try {
         const review = await Review.findById(req.params.reviewId);
@@ -49,7 +45,20 @@ exports.getReviewById = async (req, res) => {
     }
 };
 
-// Update a review by ID
+exports.getReviewsByEntityId = async (req, res) => {
+    try {
+        const { entityId } = req.params;
+
+        // Assuming entityId is the ID of the entity for which you want to retrieve reviews
+        const reviews = await Review.find({ entityId });
+
+        res.status(200).json({ reviews });
+    } catch (error) {
+        console.error('Error retrieving reviews by entity ID:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
 exports.updateReview = async (req, res) => {
     try {
         const { reviewId } = req.params;
