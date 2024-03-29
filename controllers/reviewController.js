@@ -49,8 +49,7 @@ exports.getReviewsByEntityId = async (req, res) => {
     try {
         const { entityId } = req.params;
 
-        // Assuming entityId is the ID of the entity for which you want to retrieve reviews
-        const reviews = await Review.find({ entityId });
+        const reviews = await Review.find({ entityId }).sort({_id: -1});
 
         res.status(200).json({ reviews });
     } catch (error) {

@@ -117,7 +117,7 @@ exports.getDiscountsByShop = async (req, res) => {
 
 exports.getDiscountById = async (req, res) => {
     try {
-        const discount = await Discount.findById(req.params.discountId);
+        const discount = await Discount.findById(req.params.discountId).populate('store', 'name owner imageUrl');
         if (!discount) {
             return res.status(404).json({ message: 'Discount not found' });
         }
