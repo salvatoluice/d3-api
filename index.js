@@ -11,6 +11,7 @@ const discountRoutes = require('./routes/discountRoutes');
 const followerRoutes = require('./routes/followerRoute');
 const reviewRoutes = require('./routes/reviewRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
+const lipanampesa = require('./routes/lipanampesa');
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.use('/api/v1/discounts', discountRoutes);
 app.use('/api/v1/followers', followerRoutes);
 app.use('/api/v1/reviews', reviewRoutes);
 app.use('/api/v1/bookings', bookingRoutes);
+app.use('/api/v1/payments', lipanampesa);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

@@ -1,18 +1,16 @@
-import express from 'express'
-const router = express.Router()
-import {
+const express = require('express');
+const router = express.Router();
+
+const {
     initiateSTKPush,
     stkPushCallback,
     confirmPayment
+} = require("../controllers/lipanampesaController.js");
 
+const { accessToken } = require("../middlewares/generateAccessToken.js");
 
-} from "../controllers/controllers.lipanampesa.js";
+router.post('/stkPush', accessToken, initiateSTKPush);
+router.post('/stkPushCallback/:BOOKING_ID', stkPushCallback);
+router.post('/confirmPayment/:CheckoutRequestID', accessToken, confirmPayment);
 
-
-import {accessToken} from "../middlewares/middlewares.generateAccessToken.js";
-
-router.route('/stkPush').post(accessToken,initiateSTKPush)
-router.route('/stkPushCallback/:Order_ID').post(stkPushCallback)
-router.route('/confirmPayment/:CheckoutRequestID').post(accessToken,confirmPayment)
-
-export default router
+module.exports = router;
