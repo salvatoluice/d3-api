@@ -12,7 +12,7 @@ const initiateSTKPush = async (req, res) => {
 
         const timestamp = getTimestamp();
         const password = new Buffer.from(process.env.BUSINESS_SHORT_CODE + process.env.PASS_KEY + timestamp).toString('base64')
-        const callback_url = `https://d3-api.onrender.com/api/v1/payments/${BOOKING_ID}`;
+        const callback_url = `https://d3-api.onrender.com/api/v1/payments/stkPushCallback/${BOOKING_ID}`;
 
         console.log("callback ", callback_url);
         request({
