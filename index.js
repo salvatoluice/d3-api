@@ -12,6 +12,7 @@ const followerRoutes = require('./routes/followerRoute');
 const reviewRoutes = require('./routes/reviewRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const lipanampesa = require('./routes/lipanampesa');
+const searchRoutes = require('./routes/searchRoutes');
 
 const app = express();
 
@@ -43,6 +44,7 @@ app.use('/api/v1/followers', followerRoutes);
 app.use('/api/v1/reviews', reviewRoutes);
 app.use('/api/v1/bookings', bookingRoutes);
 app.use('/api/v1/payments', lipanampesa);
+app.use('/api/v1/search', searchRoutes);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

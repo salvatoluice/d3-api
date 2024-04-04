@@ -12,6 +12,7 @@ const discountSchema = new mongoose.Schema({
     store: { type: mongoose.Schema.Types.ObjectId, ref: 'Store', required: true },
     serviceTime: { type: String },
     description: { type: String },
+    slag: { type: String },
     imageUrl: { type: String }
 });
 

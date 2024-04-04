@@ -64,7 +64,7 @@ exports.getBookingSlotsByDiscountId = async (req, res) => {
 
 exports.createDiscount = async (req, res) => {
     try {
-        const { name, initialPrice, discount, expiryDate, category, store, serviceTime, imageUrl, description } = req.body;
+        const { name, initialPrice, discount, expiryDate, category, store, serviceTime, imageUrl, description, slag } = req.body;
 
         const priceAfterDiscount = initialPrice - discount;
 
@@ -81,6 +81,7 @@ exports.createDiscount = async (req, res) => {
             store,
             serviceTime,
             description,
+            slag,
             imageUrl
         });
 
@@ -147,7 +148,7 @@ exports.getBookingSlotsByDiscountId = async (req, res) => {
 exports.updateDiscount = async (req, res) => {
     try {
         const { discountId } = req.params;
-        const { name, initialPrice, discount, expiryDate, category, store, serviceTime } = req.body;
+        const { name, initialPrice, discount, expiryDate, category, store, serviceTime, description, slag } = req.body;
 
         const updatedDiscount = await Discount.findByIdAndUpdate(discountId, {
             name,
@@ -156,6 +157,8 @@ exports.updateDiscount = async (req, res) => {
             expiryDate,
             category,
             store,
+            description,
+            slag,
             serviceTime
         }, { new: true });
 
