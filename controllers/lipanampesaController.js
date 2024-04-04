@@ -56,7 +56,7 @@ const initiateSTKPush = async (req, res) => {
 
 const stkPushCallback = async (req, res) => {
     try {
-        const BOOKING_ID = '660bad548e212dd3f78a1f90'; // Replace with the actual booking ID
+        const BOOKING_ID = '660bad548e212dd3f78a1f90';
         const {
             MerchantRequestID,
             CheckoutRequestID,
@@ -84,7 +84,6 @@ const stkPushCallback = async (req, res) => {
             TransactionDate : ${TransactionDate}
         `);
 
-        // Update the booking status to paid
         await Booking.findByIdAndUpdate(BOOKING_ID, { paid: true });
 
         res.json(true);

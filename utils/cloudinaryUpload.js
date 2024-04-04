@@ -12,7 +12,7 @@ const uploadToCloudinary = (file) => {
       if (error) {
         reject(error);
       } else {
-        resolve(result.secure_url); // Cloudinary file URL
+        resolve(result.secure_url);
       }
     });
   });
