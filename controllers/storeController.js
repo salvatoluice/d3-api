@@ -49,7 +49,6 @@ exports.getAllStores = async (req, res) => {
             return res.status(404).json({ message: 'Stores not found' });
         }
 
-        // Add followers count to each store
         for (let store of stores) {
             const followersCount = await Follower.countDocuments({ store: store._id });
             store.followers = followersCount;
