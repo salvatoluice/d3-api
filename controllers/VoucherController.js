@@ -50,7 +50,15 @@ async function generateVoucher(req, res) {
 
 async function getAllVouchers(req, res) {
     try {
-        const vouchers = await Voucher.find();
+        const vouchers = await Voucher.find()
+            .populate({
+                path: 'user',
+                select: 'first_name last_name email phone'
+            })
+            .populate({
+                path: 'discount',
+                select: 'name'
+            });
         return res.status(200).json(vouchers);
     } catch (error) {
         console.error("Error fetching vouchers:", error);
