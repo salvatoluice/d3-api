@@ -79,7 +79,8 @@ exports.updateStore = async (req, res) => {
 
 exports.getUserStores = async (req, res) => {
     try {
-        const stores = await Store.find({ owner: req.user._id });
+        const userId = req.params.userId;
+        const stores = await Store.find({ owner: userId });
         res.status(200).json({ stores });
     } catch (error) {
         console.error('Error retrieving user stores:', error);
