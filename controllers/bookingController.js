@@ -7,7 +7,6 @@ exports.createBooking = async (req, res) => {
         const { discountId, userId, bookingSlotId, storeId } = req.body;
 
         const bookingSlot = await BookingSlot.findOne({ _id: bookingSlotId, discountId, booked: false, date: { $gte: new Date() } });
-        // console.log(bookingSlot);
         if (!bookingSlot) {
             return res.status(400).json({ message: 'Booking slot not available or date is in the past' });
         }
