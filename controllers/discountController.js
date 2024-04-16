@@ -97,7 +97,10 @@ exports.createDiscount = async (req, res) => {
 exports.getAllDiscounts = async (req, res) => {
     try {
         const discounts = await Discount.find().populate('store', 'name owner imageUrl');
-        res.status(200).json({ discounts });
+
+        const reversedDiscounts = discounts.reverse();
+
+        res.status(200).json({ discounts: reversedDiscounts });
     } catch (error) {
         console.error('Error retrieving discounts:', error);
         res.status(500).json({ message: 'Internal server error' });
@@ -109,12 +112,16 @@ exports.getDiscountsByShop = async (req, res) => {
         const { shopId } = req.params;
 
         const discounts = await Discount.find({ store: shopId }).populate('store', 'name owner imageUrl');
-        res.status(200).json({ discounts });
+
+        const reversedDiscounts = discounts.reverse();
+
+        res.status(200).json({ discounts: reversedDiscounts });
     } catch (error) {
         console.error('Error retrieving discounts by shop:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
 
 exports.getDiscountById = async (req, res) => {
     try {

@@ -14,6 +14,8 @@ const bookingRoutes = require('./routes/bookingRoutes');
 const lipanampesa = require('./routes/lipanampesa');
 const searchRoutes = require('./routes/searchRoutes');
 const voucherRoutes = require('./routes/voucherRoutes');
+const ticketRoutes = require('./routes/ticketRoutes');
+const emailRoutes = require('./routes/emailRoutes');
 
 const app = express();
 
@@ -47,6 +49,8 @@ app.use('/api/v1/bookings', bookingRoutes);
 app.use('/api/v1/payments', lipanampesa);
 app.use('/api/v1/search', searchRoutes);
 app.use('/api/v1/vouchers', voucherRoutes);
+app.use('/api/v1/tickets', ticketRoutes);
+app.use('/api/v1/email', emailRoutes);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

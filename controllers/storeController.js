@@ -54,12 +54,15 @@ exports.getAllStores = async (req, res) => {
             store.followers = followersCount;
         }
 
-        res.status(200).json({ stores });
+        const reversedStores = stores.reverse();
+
+        res.status(200).json({ stores: reversedStores });
     } catch (error) {
         console.error('Error retrieving stores:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
 
 exports.updateStore = async (req, res) => {
     try {
