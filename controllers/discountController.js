@@ -96,7 +96,7 @@ exports.createDiscount = async (req, res) => {
 
 exports.getAllDiscounts = async (req, res) => {
     try {
-        const discounts = await Discount.find().populate('store', 'name owner imageUrl');
+        const discounts = await Discount.find().populate('store');
 
         const reversedDiscounts = discounts.reverse();
 
