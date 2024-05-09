@@ -96,7 +96,10 @@ exports.createDiscount = async (req, res) => {
 
 exports.getAllDiscounts = async (req, res) => {
     try {
-        const discounts = await Discount.find().populate('store');
+        const discounts = await Discount.find().populate({
+            path: 'store',
+            populate: { path: 'owner' }
+        });
 
         const reversedDiscounts = discounts.reverse();
 
