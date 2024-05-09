@@ -117,7 +117,13 @@ exports.getDiscountsByShop = async (req, res) => {
     try {
         const { shopId } = req.params;
 
-        const discounts = await Discount.find({ store: shopId }).populate('store', 'name owner imageUrl');
+        const discounts = await Discount.find({ store: shopId }).populate({
+            path: 'store',
+            populate: { 
+                path: 'owner',
+                select: '-password -role' 
+            }
+        });
 
         const reversedDiscounts = discounts.reverse();
 
