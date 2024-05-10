@@ -16,6 +16,7 @@ const searchRoutes = require('./routes/searchRoutes');
 const voucherRoutes = require('./routes/voucherRoutes');
 const ticketRoutes = require('./routes/ticketRoutes');
 const emailRoutes = require('./routes/emailRoutes');
+const messageRoutes = require('./routes/messageRoutes');
 
 const app = express();
 
