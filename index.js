@@ -67,6 +67,7 @@ app.use('/api/v1/search', searchRoutes);
 app.use('/api/v1/vouchers', voucherRoutes);
 app.use('/api/v1/tickets', ticketRoutes);
 app.use('/api/v1/email', emailRoutes);
+app.use('/api/v1/mesasges', messageRoutes);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
