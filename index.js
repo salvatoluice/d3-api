@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
+const cors = require('cors'); // Import the cors middleware
 const http = require('http');
 const bodyParser = require('body-parser');
 const flash = require('connect-flash');
@@ -31,6 +31,8 @@ app.use(flash());
 
 const io = socketIo.init(server);
  
+app.use(cors());
+
 const corsOptions = {
   origin: '*',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
@@ -52,7 +54,6 @@ io.on('connection', (socket) => {
         console.log('Message received: ' + msg);
         io.emit('chat message', msg);
     });
-
 });
 
 app.use('/api/v1/users', authRoutes);
@@ -67,9 +68,9 @@ app.use('/api/v1/search', searchRoutes);
 app.use('/api/v1/vouchers', voucherRoutes);
 app.use('/api/v1/tickets', ticketRoutes);
 app.use('/api/v1/email', emailRoutes);
-app.use('/api/v1/mesasges', messageRoutes);
+app.use('/api/v1/messages', messageRoutes);
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(``);
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
