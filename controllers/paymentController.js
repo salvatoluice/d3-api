@@ -1,18 +1,19 @@
 const request = require("request");
-const ngrok = require('ngrok');
+require('dotenv').config();
 const { getTimestamp } = require("../utils/timestamp.js");
-const Booking = require('../models/Booking.js');
+const ngrok = require('ngrok');
 
-const initiateSTKPush = async (req, res) => {
+exports.initiateSTKPush = async (req, res) => {
     try {
-        const { amount, phone } = req.body;
-        const BOOKING_ID = '660bad548e212dd3f78a1f90';
+        const { amount, phone, Order_ID } = req.body;
         const url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
         const auth = "Bearer " + req.safaricom_access_token;
 
         const timestamp = getTimestamp();
-        const password = new Buffer.from(process.env.BUSINESS_SHORT_CODE + process.env.PASS_KEY + timestamp).toString('base64')
-        const callback_url = `https://d3-api.onrender.com/api/v1/payments/stkPushCallback/${BOOKING_ID}`;
+        const password = new Buffer.from(process.env.BUSINESS_SHORT_CODE + process.env.PASS_KEY + timestamp).toString('base64');
+        const callback_url = 'https://d3-api.onrender.com/api/v1';
+        // const api = ngrok.getApi();
+        // await api.listTunnels();
 
         console.log("callback ", callback_url);
         request({
@@ -23,15 +24,15 @@ const initiateSTKPush = async (req, res) => {
             },
             json: {
                 "BusinessShortCode": process.env.BUSINESS_SHORT_CODE,
+                "Password": password,
                 "Timestamp": timestamp,
                 "TransactionType": "CustomerPayBillOnline",
-                "Amount": '1',
-                "PartyA": '254113794219',
+                "Amount": amount,
+                "PartyA": phone,
                 "PartyB": process.env.BUSINESS_SHORT_CODE,
-                "Password": password,
-                "PhoneNumber": '254113794219',
-                "CallBackURL": `${callback_url}/api/stkPushCallback/${BOOKING_ID}`,
-                "AccountReference": "D-THREE COUPON SHOP",
+                "PhoneNumber": phone,
+                "CallBackURL": `${callback_url}/api/v1/stkPushCallback/${Order_ID}`,
+                "AccountReference": "DTREE Coupon Shop",
                 "TransactionDesc": "Paid online"
             }
         }, function (e, response, body) {
@@ -54,17 +55,10 @@ const initiateSTKPush = async (req, res) => {
     }
 };
 
-const stkPushCallback = async (req, res) => {
+exports.stkPushCallback = async (req, res) => {
     try {
-        const BOOKING_ID = '660bad548e212dd3f78a1f90';
-        const {
-            MerchantRequestID,
-            CheckoutRequestID,
-            ResultCode,
-            ResultDesc,
-            CallbackMetadata
-        } = req.body.Body.stkCallback;
-
+        const { Order_ID } = req.params;
+        const { Body: { stkCallback: { MerchantRequestID, CheckoutRequestID, ResultCode, ResultDesc, CallbackMetadata } } } = req.body;
         const meta = Object.values(await CallbackMetadata.Item);
         const PhoneNumber = meta.find(o => o.Name === 'PhoneNumber').Value.toString();
         const Amount = meta.find(o => o.Name === 'Amount').Value.toString();
@@ -73,7 +67,7 @@ const stkPushCallback = async (req, res) => {
 
         console.log("-".repeat(20), " OUTPUT IN THE CALLBACK ", "-".repeat(20));
         console.log(`
-            BOOKING_ID : ${BOOKING_ID},
+            Order_ID : ${Order_ID},
             MerchantRequestID : ${MerchantRequestID},
             CheckoutRequestID: ${CheckoutRequestID},
             ResultCode: ${ResultCode},
@@ -83,8 +77,6 @@ const stkPushCallback = async (req, res) => {
             MpesaReceiptNumber: ${MpesaReceiptNumber},
             TransactionDate : ${TransactionDate}
         `);
-
-        await Booking.findByIdAndUpdate(BOOKING_ID, { paid: true });
 
         res.json(true);
     } catch (e) {
@@ -96,13 +88,12 @@ const stkPushCallback = async (req, res) => {
     }
 };
 
-const confirmPayment = async (req, res) => {
+exports.confirmPayment = async (req, res) => {
     try {
         const url = "https://sandbox.safaricom.co.ke/mpesa/stkpushquery/v1/query";
         const auth = "Bearer " + req.safaricom_access_token;
-
         const timestamp = getTimestamp();
-        const password = Buffer.from(process.env.BUSINESS_SHORT_CODE + process.env.PASS_KEY + timestamp).toString('base64');
+        const password = new Buffer.from(process.env.BUSINESS_SHORT_CODE + process.env.PASS_KEY + timestamp).toString('base64');
 
         request({
             url: url,
@@ -134,10 +125,4 @@ const confirmPayment = async (req, res) => {
             error: e
         });
     }
-};
-
-module.exports = {
-    initiateSTKPush,
-    stkPushCallback,
-    confirmPayment
 };

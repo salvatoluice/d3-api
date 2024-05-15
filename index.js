@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors'); // Import the cors middleware
+const cors = require('cors');
 const http = require('http');
 const bodyParser = require('body-parser');
 const flash = require('connect-flash');
@@ -14,12 +14,12 @@ const discountRoutes = require('./routes/discountRoutes');
 const followerRoutes = require('./routes/followerRoute');
 const reviewRoutes = require('./routes/reviewRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
-const lipanampesa = require('./routes/lipanampesa');
 const searchRoutes = require('./routes/searchRoutes');
 const voucherRoutes = require('./routes/voucherRoutes');
 const ticketRoutes = require('./routes/ticketRoutes');
 const emailRoutes = require('./routes/emailRoutes');
 const messageRoutes = require('./routes/messageRoutes');
+const paymentRoutes = require('./routes/paymentRoutes')
 
 const app = express();
 const server = http.createServer(app);
@@ -39,7 +39,6 @@ const corsOptions = {
   credentials: true,
   optionsSuccessStatus: 204,
 };
-
 app.use(cors(corsOptions));
 
 mongoose.connect('mongodb+srv://salvatoluice5:pa9o2XYROyhlT1fc@cluster0.decb1ui.mongodb.net/', {
@@ -63,12 +62,12 @@ app.use('/api/v1/discounts', discountRoutes);
 app.use('/api/v1/followers', followerRoutes);
 app.use('/api/v1/reviews', reviewRoutes);
 app.use('/api/v1/bookings', bookingRoutes);
-app.use('/api/v1/payments', lipanampesa);
 app.use('/api/v1/search', searchRoutes);
 app.use('/api/v1/vouchers', voucherRoutes);
 app.use('/api/v1/tickets', ticketRoutes);
 app.use('/api/v1/email', emailRoutes);
 app.use('/api/v1/messages', messageRoutes);
+app.use('/api/v1/payments', paymentRoutes)
 
 const PORT = process.env.PORT || 4000;
 server.listen(PORT, () => {

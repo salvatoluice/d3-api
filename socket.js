@@ -1,5 +1,3 @@
-// Update socket.js
-
 const socketIO = require('socket.io');
 
 let io;
@@ -8,7 +6,7 @@ module.exports = {
   init: (httpServer) => {
     io = socketIO(httpServer, {
       cors: {
-        origin: "http://localhost:3000",
+        origin: "*",
         methods: ["GET", "POST"]
       }
     });
