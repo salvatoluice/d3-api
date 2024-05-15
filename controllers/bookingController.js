@@ -41,14 +41,14 @@ exports.getUserBookings = async (req, res) => {
 
         const bookings = await Booking.find({ user: userId })
             .populate('discount', 'name initialPrice discount')
-            .populate('store', 'name');
+            .populate('store', 'name')
+            .populate('bookingSlotId', 'date startTime endTime');
 
-        // Map over the bookings array to format the response
         const formattedBookings = bookings.map(booking => {
             return {
                 discountName: booking.discount.name,
                 storeName: booking.store.name,
-                time: new Date(booking.createdAt).toLocaleString(), 
+                time: new Date(booking.bookingSlotId.date).toLocaleDateString() + ', ' + booking.bookingSlotId.startTime + ' - ' + booking.bookingSlotId.endTime,
                 initialPrice: booking.discount.initialPrice,
                 discount: booking.discount.discount,
                 priceAfterDiscount: booking.discount.initialPrice - booking.discount.discount,
@@ -64,7 +64,7 @@ exports.getUserBookings = async (req, res) => {
 exports.getAllBookings = async (req, res) => {
     try {
         const bookings = await Booking.find()
-            .populate('user', 'name') // Assuming user name is stored in the user model
+            .populate('user', 'name')
             .populate('discount', 'name initialPrice discount')
             .populate('store', 'name');
 
