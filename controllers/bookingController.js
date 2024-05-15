@@ -34,3 +34,30 @@ exports.createBooking = async (req, res) => {
         res.status(500).json({ message: error.message});
     }
 };
+
+exports.getUserBookings = async (req, res) => {
+    try {
+        const userId = req.user.id; 
+
+        const bookings = await Booking.find({ user: userId })
+            .populate('discount', 'name initialPrice discount')
+            .populate('store', 'name');
+
+        res.status(200).json({ bookings });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+exports.getAllBookings = async (req, res) => {
+    try {
+        const bookings = await Booking.find()
+            .populate('user', 'name') // Assuming user name is stored in the user model
+            .populate('discount', 'name initialPrice discount')
+            .populate('store', 'name');
+
+        res.status(200).json({ bookings });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
