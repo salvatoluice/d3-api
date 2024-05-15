@@ -37,13 +37,25 @@ exports.createBooking = async (req, res) => {
 
 exports.getUserBookings = async (req, res) => {
     try {
-        const userId = req.user.id; 
+        const userId = req.user.id;
 
         const bookings = await Booking.find({ user: userId })
             .populate('discount', 'name initialPrice discount')
             .populate('store', 'name');
 
-        res.status(200).json({ bookings });
+        // Map over the bookings array to format the response
+        const formattedBookings = bookings.map(booking => {
+            return {
+                discountName: booking.discount.name,
+                storeName: booking.store.name,
+                time: new Date(booking.createdAt).toLocaleString(), 
+                initialPrice: booking.discount.initialPrice,
+                discount: booking.discount.discount,
+                priceAfterDiscount: booking.discount.initialPrice - booking.discount.discount,
+            };
+        });
+
+        res.status(200).json({ bookings: formattedBookings });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
