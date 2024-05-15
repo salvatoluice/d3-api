@@ -42,7 +42,7 @@ exports.getUserBookings = async (req, res) => {
         const bookings = await Booking.find({ user: userId })
             .populate('discount', 'name initialPrice discount')
             .populate('store', 'name')
-            .populate('bookingSlotId', 'date startTime endTime');
+            .populate('bookingSlot', 'date startTime endTime');
 
         const formattedBookings = bookings.map(booking => {
             return {
